@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TecnAS | Site de Teste</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,11 +18,81 @@
     h1 {
       color: #244b85;
     }
+
+    main {
+      max-width: 750px;
+      margin: auto;
+    }
+
+    #conteudo {
+      line-height: 1.7;
+    }
   </style>
 </head>
+
 <body>
-  <h1>Bem-vindo à TecnAS!</h1>
-  <p>Liga Acadêmica de Tecnologia Assistiva e Acessibilidade</p>
-  <p>Este é nosso primeiro teste de hospedagem.</p>
+  <main>
+    <h1 id="titulo">Carregando...</h1>
+    <div id="conteudo"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+
+  <script>
+    async function carregarConteudo() {
+      const titulo = document.getElementById("titulo");
+      const conteudo = document.getElementById("conteudo");
+
+      try {
+        const resposta = await fetch(
+          "/conteudo/inicio.md",
+          { cache: "no-store" }
+        );
+
+        if (!resposta.ok) {
+          throw new Error("Arquivo não encontrado");
+        }
+
+        const markdown = await resposta.text();
+
+        const match = markdown.match(
+          /^---\s*\r?\n([\s\S]*?)\r?\n---\s*\r?\n?/
+        );
+
+        let corpo = markdown;
+
+        if (match) {
+          const dados = match[1];
+          const linhaTitulo = dados.match(
+            /^title:\s*(.+)$/m
+          );
+
+          if (linhaTitulo) {
+            titulo.textContent = linhaTitulo[1]
+              .trim()
+              .replace(/^["']|["']$/g, "");
+          }
+
+          corpo = markdown.slice(match[0].length);
+        }
+
+        if (!match) {
+          titulo.textContent = "TecnAS";
+        }
+
+        // Conteúdo Markdown controlado pelos editores
+        // autorizados do repositório.
+        conteudo.innerHTML = marked.parse(corpo);
+
+      } catch (erro) {
+        titulo.textContent = "TecnAS";
+        conteudo.textContent =
+          "Não foi possível carregar o conteúdo.";
+        console.error(erro);
+      }
+    }
+
+    carregarConteudo();
+  </script>
 </body>
 </html>

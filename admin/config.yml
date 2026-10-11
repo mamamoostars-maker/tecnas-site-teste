@@ -3,6 +3,8 @@ backend:
   name: github
   repo: mamamoostars-maker/tecnas-site-teste
   branch: main
+  base_url: https://tecnas-cms-oauth-teste.mamamoostars.workers.dev
+  auth_endpoint: auth
 
 media_folder: "imagens"
 public_folder: "/imagens"

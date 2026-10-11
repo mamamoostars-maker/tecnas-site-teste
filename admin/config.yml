@@ -1,0 +1,19 @@
+
+backend:
+  name: github
+  repo: mamamoostars-maker/tecnas-site-teste
+  branch: main
+
+media_folder: "imagens"
+public_folder: "/imagens"
+
+collections:
+  - name: "paginas"
+    label: "Páginas do site"
+    files:
+      - label: "Página inicial"
+        name: "inicio"
+        file: "conteudo/inicio.md"
+        fields:
+          - { label: "Título", name: "title", widget: "string" }
+          - { label: "Texto", name: "body", widget: "markdown" }

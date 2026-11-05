@@ -7,12 +7,30 @@
   <title>TecnAS | Site de Teste</title>
 
   <style>
+    @font-face {
+      font-family: "OpenDyslexic";
+      src: url("/OpenDyslexic3-Regular.ttf") format("truetype");
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "OpenDyslexic";
+      src: url("/OpenDyslexic3-Bold.ttf") format("truetype");
+      font-weight: 700;
+      font-display: swap;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f3f5fa;
       text-align: center;
       padding: 60px 20px;
       color: #24324a;
+    }
+
+    body.open-dyslexic {
+      font-family: "OpenDyslexic", Arial, sans-serif;
     }
 
     h1 {
@@ -27,11 +45,39 @@
     #conteudo {
       line-height: 1.7;
     }
+
+    #botao-fonte {
+      padding: 12px 18px;
+      margin-bottom: 30px;
+      border: 2px solid #59318c;
+      border-radius: 8px;
+      background: white;
+      color: #59318c;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    #botao-fonte:hover {
+      background: #eee6f8;
+    }
+
+    #botao-fonte:focus-visible {
+      outline: 3px solid #59318c;
+      outline-offset: 3px;
+    }
   </style>
 </head>
 
 <body>
   <main>
+    <button
+      id="botao-fonte"
+      type="button"
+      aria-pressed="false"
+    >
+      Ativar OpenDyslexic
+    </button>
+
     <h1 id="titulo">Carregando...</h1>
     <div id="conteudo"></div>
   </main>
@@ -39,6 +85,40 @@
   <script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
 
   <script>
+    const botaoFonte = document.getElementById("botao-fonte");
+
+    function atualizarFonte(ativada) {
+      document.body.classList.toggle("open-dyslexic", ativada);
+
+      botaoFonte.textContent = ativada
+        ? "Desativar OpenDyslexic"
+        : "Ativar OpenDyslexic";
+
+      botaoFonte.setAttribute("aria-pressed", String(ativada));
+    }
+
+    let fonteSalva = false;
+
+    try {
+      fonteSalva = localStorage.getItem("tecnas-open-dyslexic") === "true";
+    } catch (erro) {
+      console.warn("Preferência não pôde ser lida.", erro);
+    }
+
+    atualizarFonte(fonteSalva);
+
+    botaoFonte.addEventListener("click", function () {
+      const ativada = !document.body.classList.contains("open-dyslexic");
+
+      atualizarFonte(ativada);
+
+      try {
+        localStorage.setItem("tecnas-open-dyslexic", String(ativada));
+      } catch (erro) {
+        console.warn("Preferência não pôde ser salva.", erro);
+      }
+    });
+
     async function carregarConteudo() {
       const titulo = document.getElementById("titulo");
       const conteudo = document.getElementById("conteudo");
